@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport Player Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏆 Sport Player Management System</h1>
+            <nav>
+                <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+                <button class="nav-btn" data-section="teams">Teams</button>
+                <button class="nav-btn" data-section="players">Players</button>
+                <button class="nav-btn" data-section="rankings">Rankings</button>
+                <button class="nav-btn" data-section="statistics">Statistics</button>
+            </nav>
+        </header>
+
+        <!-- DASHBOARD SECTION -->
+        <section id="dashboard" class="content-section active">
+            <h2>Dashboard Overview</h2>
+            <div class="sample-data-section">
+                <button class="btn-primary" onclick="loadSampleData()">📊 Load Sample Data</button>
+                <button class="btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+            <div class="dashboard-cards">
+                <div class="card">
+                    <h3>Total Teams</h3>
+                    <p class="stat-number" id="totalTeams">0</p>
+                </div>
+                <div class="card">
+                    <h3>Total Players</h3>
+                    <p class="stat-number" id="totalPlayers">0</p>
+                </div>
+                <div class="card">
+                    <h3>Total Goals</h3>
+                    <p class="stat-number" id="totalGoals">0</p>
+                </div>
+                <div class="card">
+                    <h3>Total Assists</h3>
+                    <p class="stat-number" id="totalAssists">0</p>
+                </div>
+            </div>
+            
+            <div class="top-players-section">
+                <h3>Top 5 Players by Ranking</h3>
+                <div id="topPlayersTable"></div>
+            </div>
+        </section>
+
+        <!-- TEAMS SECTION -->
+        <section id="teams" class="content-section">
+            <div class="section-header">
+                <h2>Teams Management</h2>
+                <button class="btn-primary" onclick="showTeamModal()">+ Add Team</button>
+            </div>
+            
+            <div class="table-container">
+                <table id="teamsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Team Name</th>
+                            <th>Coach</th>
+                            <th>Founded Year</th>
+                            <th>City</th>
+                            <th>Stadium</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teamsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PLAYERS SECTION -->
+        <section id="players" class="content-section">
+            <div class="section-header">
+                <h2>Players Management</h2>
+                <div class="search-add-container">
+                    <input type="text" id="playerSearch" placeholder="Search players..." class="search-input">
+                    <button class="btn-primary" onclick="showPlayerModal()">+ Add Player</button>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="playersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Team</th>
+                            <th>Position</th>
+                            <th>Jersey #</th>
+                            <th>Age</th>
+                            <th>Ranking</th>
+                            <th>Goals</th>
+                            <th>Assists</th>
+                            <th>Matches</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- RANKINGS SECTION -->
+        <section id="rankings" class="content-section">
+            <h2>Player Rankings</h2>
+            <div class="filter-section">
+                <label>Show Top:
+                    <select id="rankingLimit" onchange="loadRankings()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </label>
+            </div>
+            
+            <div class="rankings-container">
+                <table id="rankingsTable">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player Name</th>
+                            <th>Team</th>
+                            <th>Position</th>
+                            <th>Ranking Score</th>
+                            <th>Goals</th>
+                            <th>Assists</th>
+                            <th>Matches Played</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- STATISTICS SECTION -->
+        <section id="statistics" class="content-section">
+            <h2>Statistics & Views</h2>
+            
+            <div class="stats-tabs">
+                <button class="tab-btn active" data-tab="playerStats">Player Statistics</button>
+                <button class="tab-btn" data-tab="teamStats">Team Statistics</button>
+            </div>
+
+            <div id="playerStats" class="stats-tab-content active">
+                <h3>Player Performance Statistics</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Player Name</th>
+                                <th>Team</th>
+                                <th>Position</th>
+                                <th>Jersey #</th>
+                                <th>Ranking</th>
+                                <th>Goals</th>
+                                <th>Assists</th>
+                                <th>Matches</th>
+                                <th>Goals/Match</th>
+                            </tr>
+                        </thead>
+                        <tbody id="playerStatsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="teamStats" class="stats-tab-content">
+                <h3>Team Statistics</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Team Name</th>
+                                <th>Coach</th>
+                                <th>City</th>
+                                <th>Total Players</th>
+                                <th>Total Goals</th>
+                                <th>Total Assists</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teamStatsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- TEAM MODAL -->
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTeamModal()">&times;</span>
+            <h2 id="teamModalTitle">Add Team</h2>
+            <form id="teamForm">
+                <input type="hidden" id="teamId">
+                <div class="form-group">
+                    <label>Team Name *</label>
+                    <input type="text" id="teamName" required>
+                </div>
+                <div class="form-group">
+                    <label>Coach Name</label>
+                    <input type="text" id="coachName">
+                </div>
+                <div class="form-group">
+                    <label>Founded Year</label>
+                    <input type="number" id="foundedYear" min="1800" max="2100">
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input type="text" id="city">
+                </div>
+                <div class="form-group">
+                    <label>Stadium</label>
+                    <input type="text" id="stadium">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" class="btn-secondary" onclick="closeTeamModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PLAYER MODAL -->
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePlayerModal()">&times;</span>
+            <h2 id="playerModalTitle">Add Player</h2>
+            <form id="playerForm">
+                <input type="hidden" id="playerId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Team</label>
+                        <select id="playerTeam">
+                            <option value="">Select Team</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Position</label>
+                        <input type="text" id="position" placeholder="e.g., Forward, Midfielder">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Jersey Number</label>
+                        <input type="number" id="jerseyNumber" min="0" max="99">
+                    </div>
+                    <div class="form-group">
+                        <label>Age</label>
+                        <input type="number" id="age" min="15" max="50">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+                        <input type="number" id="height" step="0.1" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="weight" step="0.1" min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ranking Score</label>
+                        <input type="number" id="ranking" min="0" max="100" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Goals</label>
+                        <input type="number" id="goals" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Assists</label>
+                        <input type="number" id="assists" min="0" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Matches Played</label>
+                        <input type="number" id="matchesPlayed" min="0" value="0">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save</button>
+                    <button type="button" class="btn-secondary" onclick="closePlayerModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
