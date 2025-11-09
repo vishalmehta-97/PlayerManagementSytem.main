@@ -37,3 +37,11 @@ class Enemy:
         else:
             print(f"{self.name} attacks {player.name} but it has no effect!")
             print(f"{player.name} has {player.health} health remaining.")
+
+class Relation:
+    def __init__(self,playerid,gamerelation):
+        self.playerid=playerid
+        self.gamerelation=gamerelation
+
+    def Relation(self,player,opponent):
+        
