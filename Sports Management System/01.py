@@ -44,4 +44,11 @@ class Relation:
         self.gamerelation=gamerelation
 
     def Relation(self,player,opponent):
+
+
+
+
+    def points(self):
         
+        
+
